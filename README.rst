@@ -20,8 +20,8 @@ the my_app directory and run::
 Use as a module
 ---------------
 
-The simplest way of using django_apptest as a module is via the ``fix_string()``
-function.
+The simplest way of using django_apptest as a module is via the ``DjangoAppTest``
+class.
 
 .. code-block:: python
 
