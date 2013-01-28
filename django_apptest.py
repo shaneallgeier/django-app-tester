@@ -35,40 +35,28 @@ class DjangoAppTest(object):
 
     def __init__(self, *args, **kwargs):
         self.apps = args
-        # Get the version of the test suite
-        self.version = self.get_test_version()
-        # Call the appropriate one
-        if self.version == 'new':
-            self._new_tests()
-        else:
-            self._old_tests()
+        # Set the version of the test suite
+        self._setup()
 
-    def get_test_version(self):
+    def _setup(self):
         """
         Figure out which version of Django's test suite we have to play with.
         """
         from django import VERSION
         if VERSION[0] == 1 and VERSION[1] >= 2:
-            return 'new'
+            self.run_tests = self._new_tests
         else:
-            return 'old'
+            self.run_tests = self._old_tests
 
-    def _old_tests(self):
+    def _old_tests(self, verbosity=1, interactive=False, extra_tests=[], **kwargs):
         """
         Fire up the Django test suite from before version 1.2
         """
-        settings.configure(DEBUG=True,
-                           DATABASE_ENGINE='sqlite3',
-                           DATABASE_NAME=os.path.join(
-                           self.DIRNAME, 'database.db'),
-                           INSTALLED_APPS=self.INSTALLED_APPS + self.apps
-                           )
+        settings.configure(DEBUG=True, DATABASE_ENGINE='sqlite3', INSTALLED_APPS=self.INSTALLED_APPS + self.apps)
         from django.test.simple import run_tests
-        failures = run_tests(self.apps, verbosity=1, interactive=False)
-        if failures:
-            sys.exit(failures)
+        return run_tests(self.apps, verbosity=verbosity, interactive=interactive, extra_tests=extra_tests)
 
-    def _new_tests(self):
+    def _new_tests(self, verbosity=1, interactive=False, extra_tests=None, failfast=False, **kwargs):
         """
         Fire up the Django test suite developed for version 1.2
         """
@@ -77,20 +65,12 @@ class DjangoAppTest(object):
             DATABASES={
                 'default': {
                     'ENGINE': 'django.db.backends.sqlite3',
-                    'NAME': os.path.join(self.DIRNAME, 'database.db'),
-                    'USER': '',
-                    'PASSWORD': '',
-                    'HOST': '',
-                    'PORT': '',
                 }
             },
             INSTALLED_APPS=self.INSTALLED_APPS + self.apps
         )
         from django.test.simple import DjangoTestSuiteRunner
-        failures = DjangoTestSuiteRunner(verbosity=1, interactive=False,
-                                         failfast=False).run_tests(self.apps)
-        if failures:
-            sys.exit(failures)
+        return DjangoTestSuiteRunner(verbosity=verbosity, interactive=interactive, failfast=failfast).run_tests(self.apps)
 
 
 def main():
@@ -109,7 +89,9 @@ def main():
     parser.add_argument('apps', nargs='+', type=str)
     args = parser.parse_args()
     sys.path.append(os.getcwd())
-    DjangoAppTest(*args.apps)
+    failures = DjangoAppTest(*args.apps).run_tests(interactive=False, failfast=False)
+    if failures:
+        sys.exit(failures)
 
 if __name__ == '__main__':
     try:
