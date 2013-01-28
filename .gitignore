@@ -1,0 +1,11 @@
+*.pyc
+__pycache__
+*.egg-info
+*.swp
+build
+dist
+htmlcov
+.tox
+*.class
+coverage.xml
+README.html
