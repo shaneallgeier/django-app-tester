@@ -28,6 +28,7 @@ with open('README.rst') as readme:
             'Development Status :: 4 - Beta',
             'Environment :: Console',
             'Intended Audience :: Developers',
+            'License :: Public Domain',
             'Operating System :: OS Independent',
             'Programming Language :: Python',
             'Programming Language :: Python :: 2',

@@ -21,6 +21,7 @@ __author__ = 'Ben Welsh'
 __credits__ = ['Ben Welsh', 'Lukasz Dziedzia', 'Shane Allgeier']
 __maintainer__ = 'Shane Allgeier'
 __version__ = '0.1'
+__license__ = 'Public Domain'
 
 
 class DjangoAppTest(object):
