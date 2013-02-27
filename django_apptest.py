@@ -76,7 +76,10 @@ class DjangoAppTest(object):
         return DjangoTestSuiteRunner(verbosity=verbosity, interactive=interactive, failfast=failfast).run_tests(self.apps)
 
     def _setup_urlpatterns(self):
-        from django.conf.urls import patterns, include, url
+        try:
+            from django.conf.urls import patterns, include, url
+        except ImportError:
+            from django.conf.urls.default import patterns, include, url
         urls = []
         for appname in self.apps:
             try:
