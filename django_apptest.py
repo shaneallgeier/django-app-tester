@@ -77,8 +77,12 @@ class DjangoAppTest(object):
 
     def _setup_urlpatterns(self):
         from django.conf.urls import patterns, include, url
-        urls = [('^%s/' % appname, include('%s.urls' % appname))
-                for appname in self.apps]
+        urls = []
+        for appname in self.apps:
+            try:
+                urls.append(('^%s/' % appname, include('%s.urls' % appname)))
+            except ImportError:
+                pass
         global urlpatterns
         urlpatterns = patterns('', *urls)
 
