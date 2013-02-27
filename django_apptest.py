@@ -14,7 +14,7 @@ http://stackoverflow.com/a/3851333/1951234
 
 import os
 import sys
-import argparse
+import optparse
 from django.conf import settings
 
 __author__ = 'Ben Welsh'

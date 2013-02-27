@@ -34,6 +34,7 @@ with open('README.rst') as readme:
             'Programming Language :: Python :: 2',
             'Programming Language :: Unix Shell',
         ],
+        install_requires=['argparse'],
         keywords='automation, unit tests, django app testing',
         py_modules=['django_apptest'],
         entry_points={'console_scripts': ['django_apptest = django_apptest:main', 'djapptest = django_apptest:main']},
