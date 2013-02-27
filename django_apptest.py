@@ -79,7 +79,7 @@ class DjangoAppTest(object):
         try:
             from django.conf.urls import patterns, include, url
         except ImportError:
-            from django.conf.urls.default import patterns, include, url
+            from django.conf.urls.defaults import patterns, include, url
         urls = []
         for appname in self.apps:
             try:
