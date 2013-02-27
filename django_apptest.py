@@ -52,7 +52,8 @@ class DjangoAppTest(object):
         """
         Fire up the Django test suite from before version 1.2
         """
-        settings.configure(DEBUG=True, DATABASE_ENGINE='sqlite3', INSTALLED_APPS=self.INSTALLED_APPS + self.apps)
+        settings.configure(DEBUG=True, DATABASE_ENGINE='sqlite3', INSTALLED_APPS=self.INSTALLED_APPS + self.apps, ROOT_URLCONF=__name__)
+        self._setup_urlpatterns()
         from django.test.simple import run_tests
         return run_tests(self.apps, verbosity=verbosity, interactive=interactive, extra_tests=extra_tests)
 
@@ -67,10 +68,19 @@ class DjangoAppTest(object):
                     'ENGINE': 'django.db.backends.sqlite3',
                 }
             },
-            INSTALLED_APPS=self.INSTALLED_APPS + self.apps
+            INSTALLED_APPS=self.INSTALLED_APPS + self.apps,
+            ROOT_URLCONF=__name__,
         )
+        self._setup_urlpatterns()
         from django.test.simple import DjangoTestSuiteRunner
         return DjangoTestSuiteRunner(verbosity=verbosity, interactive=interactive, failfast=failfast).run_tests(self.apps)
+
+    def _setup_urlpatterns(self):
+        from django.conf.urls import patterns, include, url
+        urls = [('^%s/' % appname, include('%s.urls' % appname))
+                for appname in self.apps]
+        global urlpatterns
+        urlpatterns = patterns('', *urls)
 
 
 def main():
